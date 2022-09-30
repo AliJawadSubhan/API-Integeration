@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ApiData {
   int? id;
   String? name;
@@ -18,7 +20,8 @@ class ApiData {
       this.website,
       this.company});
 
-  ApiData.fromJson(Map<String, dynamic> json) {
+  ApiData.fromJson(Map<String, dynamic> json,) {
+    
     id = json['id'];
     name = json['name'];
     username = json['username'];
@@ -33,7 +36,7 @@ class ApiData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
+    data['id'] = id;
     data['name'] = this.name;
     data['username'] = this.username;
     data['email'] = this.email;
