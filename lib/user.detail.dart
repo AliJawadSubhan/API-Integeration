@@ -1,6 +1,7 @@
 import 'package:apiexample/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserDetail extends StatefulWidget {
   var apiData = ApiData();
@@ -11,6 +12,15 @@ class UserDetail extends StatefulWidget {
 }
 
 class _UserDetailState extends State<UserDetail> {
+
+  Future launchGoogleMap(dynamic latitude, dynamic longitude) async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+    final Uri uri = Uri(scheme: 'https', host: googleUrl);
+    if(!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch';
+          
+    }
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -31,6 +41,7 @@ class _UserDetailState extends State<UserDetail> {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -59,37 +70,67 @@ class _UserDetailState extends State<UserDetail> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        "Info..",
-                        style: GoogleFonts.lato(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 35),
+                      SizedBox(
+                        height: 38,
                       ),
-                      Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          userDetail("Name"),
-                          minorDetail(widget.apiData.name),
-                          userDetail("Username"),
-                          minorDetail(widget.apiData.username),
-                          userDetail('Email Address'),
-                          minorDetail(
-                            widget.apiData.email,
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                            child: HeadingText("Name"),
                           ),
-                          userDetail("City and Street Name"),
-                          Row(
-                            children: [
-                              minorDetail(
-                                widget.apiData.address!.city,
-                              ),
-                              Text(","),
-                              minorDetail(
-                                widget.apiData.address!.street,
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DetailText(widget.apiData.name),
                           ),
                         ],
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: HeadingText("Username"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DetailText(widget.apiData.username),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: HeadingText('Email Address'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DetailText(
+                              widget.apiData.email,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: HeadingText("City"),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: DetailText(
+                              widget.apiData.address!.city,
+                            ),
+                          ),
+
+                        ],
+                      ),
+
                     ],
                   ),
                 ),
@@ -99,21 +140,35 @@ class _UserDetailState extends State<UserDetail> {
         ),
       ),
     );
+
   }
 
-  Text userDetail(header) {
+  }
+
+
+class DetailText extends StatelessWidget {
+  DetailText(this.text);
+  String? text;
+  @override
+  Widget build(BuildContext context) {
     return Text(
-      header,
+      '$text',
       style: GoogleFonts.sourceSansPro(
-          fontSize: 36, fontWeight: FontWeight.bold, color: Colors.grey[900]),
+          fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey[800]),
     );
   }
 }
 
-Text minorDetail(text) {
-  return Text(
-    text,
-    style: GoogleFonts.sourceSansPro(
-        fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey[800]),
-  );
+class HeadingText extends StatelessWidget {
+  HeadingText(this.header);
+  String header;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      header,
+      style: GoogleFonts.sourceSansPro(
+          fontSize: 21, fontWeight: FontWeight.bold, color: Colors.grey[900]),
+    );
+  }
 }
